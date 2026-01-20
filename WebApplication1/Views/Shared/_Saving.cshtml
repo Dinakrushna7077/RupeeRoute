@@ -1,0 +1,70 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model IEnumerable<RupeeRoute.Web.Models.SavingViewModel>
+
+@{
+    ViewData["Title"] = "Savings";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <div class="row">
+
+        
+
+        <!-- Main content -->
+        <main class="col-lg-10 offset-lg-2 px-4 py-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Savings</h2>
+                <button class="btn btn-success">
+                    <i class="fa fa-plus me-1"></i> Add Saving
+                </button>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold bg-white">Savings History</div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Note</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Any())
+                            {
+                                foreach (var s in Model)
+                                {
+                                    <tr>
+                                        <td>@s.SavingDate?.ToString("dd MMM yyyy")</td>
+                                        <td>@s.SavingNote</td>
+                                        <td class="text-end text-success fw-bold">
+                                            ₹@s.Amount.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">
+                                        No savings added yet
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>

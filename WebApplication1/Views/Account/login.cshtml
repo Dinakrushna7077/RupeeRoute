@@ -1,0 +1,69 @@
+﻿@model RupeeRoute.Web.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>RupeeRoute | Login</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="~/css/login.css" rel="stylesheet"/>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body class="d-flex align-items-center justify-content-center px-3">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- Responsive column -->
+            <div class="col-12 col-sm-10 col-md-6 col-lg-4 col-xl-3">
+                <div class="card login-card p-4">
+                    <div class="text-center mb-3">
+                        <h3 class="brand-title">RupeeRoute</h3>
+                        <p class="text-muted small">Manage your money smarter</p>
+                    </div>
+
+                    <form asp-action="Login" method="post">
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="Email address" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        @if (ViewBag.Error != null)
+                        {
+                            <div class="alert alert-danger py-2 small">
+                                @ViewBag.Error
+                            </div>
+                        }
+
+                        <button type="submit" class="btn btn-success w-100">
+                            Login
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <small>
+                            Don’t have an account?
+                            <a asp-action="Register">Register</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+﻿<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/dashboard.css" rel="stylesheet" />
+
+<div class="container-fluid mt-5">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <nav class="col-lg-2 d-none d-lg-block sidebar p-4 position-fixed">
+            <h4 class="mb-4">RupeeRoute</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="javascript:void(0)"
+                       data-url="/Dashboard/Index">
+                        <i class="fa fa-chart-line me-2"></i> Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0)"
+                       data-url="/Dashboard/Expenses">
+                        <i class="fa fa-wallet me-2"></i> Expenses
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0)"
+                       data-url="/Dashboard/Saving">
+                        <i class="fa fa-piggy-bank me-2"></i> Savings
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0)"
+                       data-url="/Dashboard/Categories">
+                        <i class="fa fa-layer-group me-2"></i> Categories
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+    </div>
+    <div id="target">
+
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/dashboard.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+

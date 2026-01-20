@@ -1,0 +1,114 @@
+﻿@model IEnumerable<RupeeRoute.Web.Models.ExpensesViewModel>
+
+@{
+    ViewData["Title"] = "Expenses - RupeeRoute";
+}
+
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background: #f4f6fb;
+    }
+
+    .sidebar {
+        background: #fff;
+        height: 100vh;
+        border-right: 1px solid #dee2e6;
+    }
+
+        .sidebar .nav-link {
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+            .sidebar .nav-link.active {
+                font-weight: bold;
+                color: #198754;
+            }
+
+    .expense-card {
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .badge-category {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+        border-radius: 8px;
+    }
+</style>
+
+    <div class="row">
+
+       
+
+        <!-- Main content -->
+        <main class="col-lg-10 offset-lg-2 px-4 py-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">Expenses</h1>
+                <button class="btn btn-primary">
+                    <i class="fa fa-plus me-1"></i> Add Expense
+                </button>
+            </div>
+
+            <!-- Expenses Table -->
+            <div class="card expense-card">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th class="text-end">Amount (₹)</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var e in Model)
+                                {
+                                    <tr>
+                                        <td>@e.ExpenseDate.ToString("dd MMM yyyy")</td>
+                                        <td>
+                                            <span class="badge bg-success badge-category">
+                                                @e.CategoryName
+                                            </span>
+                                        </td>
+                                        <td>@e.Description</td>
+                                        <td class="text-end text-danger fw-bold">
+                                            ₹@e.Amount
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-outline-primary me-1">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">
+                                        No expenses found
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

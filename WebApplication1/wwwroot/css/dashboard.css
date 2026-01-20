@@ -1,0 +1,57 @@
+body {
+    background: #f4f6fb;
+}
+
+.sidebar {
+    background: #fff;
+    height: 100vh;
+    border-right: 1px solid #dee2e6;
+}
+
+    .sidebar .nav-link {
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+        .sidebar .nav-link.active {
+            font-weight: bold;
+            color: #198754;
+        }
+
+.card-stat {
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+}
+
+    .card-stat:hover {
+        transform: translateY(-5px);
+    }
+
+.icon {
+    font-size: 1.5rem;
+    padding: 15px;
+    border-radius: 50%;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-income {
+    background: #1cc88a;
+}
+
+.bg-expense {
+    background: #e74a3b;
+}
+
+.bg-balance {
+    background: #4e73df;
+}
+
+.bg-savings {
+    background: #f6c23e;
+}
