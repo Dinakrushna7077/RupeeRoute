@@ -37,16 +37,24 @@ namespace RupeeRoute.Web.Controllers
         public async Task<IActionResult> Expenses()
         {
             int userId = 3; // later from login/session
-
-            var expenses = await api.GetExpenses(userId);
+            int limit = 10;
+            var expenses = await api.GetExpenses(userId,limit);
 
             return PartialView("_Expenses",expenses);
+        }
+        public async Task<IActionResult> NewSaving([FromBody]SavingViewModel sav)
+        {
+            int userId = 3; // later from login/session
+            int limit=10;
+            var success = await api.AddSaving(userId,sav);
+            var savings = await api.GetSavings(userId,limit);
+            return PartialView("_Saving", savings);
         }
         public async Task<IActionResult> Saving()
         {
             int userId = 3; // later from login/session
-
-            var savings = await api.GetSavings(userId);
+            int limit = 10;
+            var savings = await api.GetSavings(userId,limit);
 
             return PartialView("_Saving",savings);
         }
@@ -61,7 +69,6 @@ namespace RupeeRoute.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddExpense([FromBody] AddExpenseViewModel model)
         {
-            model.UserId = 3; // later from session/login
             model.UserId = 3; // later from session/login
 
             var success = await api.AddExpense(model);
@@ -79,6 +86,40 @@ namespace RupeeRoute.Web.Controllers
             int userId = 3; // later from login/session
             var categories = await api.GetCategories(userId);
             return Json(categories);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddCategory([FromBody] ExpenseCategoryViewModel model)
+        {
+            int userId = 3; // later from session/login
+
+            var success = await api.NewCategory(userId,model);
+
+            if (!success)
+                return BadRequest();
+
+            // Reload dashboard partial after insert
+            var categories = await api.GetCategories(userId);
+            return PartialView("_Categories", categories);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var result = await api.DeleteCategoryAsync(id);
+
+            if (!result)
+                return Json(new { success = false, message = "Delete failed" });
+
+            return Json(new { success = true });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteExpense(int id)
+        {
+            var result = await api.DeleteExpenseAsync(id);
+
+            if (!result)
+                return Json(new { success = false, message = "Delete failed" });
+
+            return Json(new { success = true });
         }
 
 

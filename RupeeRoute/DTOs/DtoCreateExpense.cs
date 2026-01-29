@@ -16,7 +16,7 @@ namespace RupeeRoute.API.DTOs
         [Required]
         public DateTime ExpenseDate { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 
 }

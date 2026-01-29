@@ -74,7 +74,7 @@ function saveExpense() {
 
             $("#addExpenseModal").modal("hide");
             $("#expenseForm")[0].reset();
-
+            $('.modal-backdrop').remove();
             // Reload dashboard after insert
             loadPage('/Dashboard/Home');
         },
@@ -109,3 +109,70 @@ function loadCategories() {
         }
     });
 }
+
+
+
+// =============================
+// Add New Saving
+// =============================
+function addSaving() {
+
+    const amount = parseFloat($("#amount").val());
+    const note = $("#note").val();
+
+    if (!amount || amount <= 0) {
+        alert("Please enter a valid amount");
+        return;
+    }
+    const data = {
+        amount: amount,
+        savingnote: note
+    };
+
+    $.ajax({
+        url: "/Dashboard/NewSaving",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (html) {
+
+            $("#addSavingModal").modal("hide");            
+            $("#savingForm")[0].reset();
+            $('.modal-backdrop').remove();
+            $("#target").load("/Dashboard/Saving");
+
+        },
+        error: function () {
+            alert("Failed to add New Saving");
+        }
+    });
+}
+
+// =============================
+// Add New Category
+// =============================
+function createNewCategory() {
+    const category = $("#categoryName").val();
+    const data = {
+        categoryname: category
+    };
+
+    $.ajax({
+        url: "/Dashboard/AddCategory",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (html) {
+
+            $("#addCategoryModal").modal("hide");            
+            $("#categoryForm")[0].reset();
+            $('.modal-backdrop').remove();
+            $("#target").load("/Dashboard/Categories");
+
+        },
+        error: function () {
+            alert("Failed to add Category");
+        }
+    });
+}
+

@@ -39,7 +39,57 @@
         border-radius: 8px;
     }
 </style>
+<!-- Add Expense Modal -->
+<div class="modal fade" id="addExpenseModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
 
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa fa-wallet me-2"></i>Add Expense
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="expenseForm">
+
+                    <div class="mb-3">
+                        <label class="form-label">Amount (₹)</label>
+                        <input type="number" class="form-control" id="amount" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" id="categoryId" required>
+                            <option value="">-- Select Category --</option>
+                            @* @foreach (var c in Model.ExpenseByCategory)
+                            {
+                                <option value="@c.ExpenseById">@c.Category</option>
+                            } *@
+                        </select>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" id="description" />
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" onclick="saveExpense()">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!----------------------------------------------------------------------->
     <div class="row">
 
        
@@ -49,10 +99,14 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3">Expenses</h1>
-                <button class="btn btn-primary">
+            
+
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addExpenseModal" onclick="loadCategories()">
                     <i class="fa fa-plus me-1"></i> Add Expense
                 </button>
             </div>
+            
+            
 
             <!-- Expenses Table -->
             <div class="card expense-card">
@@ -88,9 +142,11 @@
                                             <button class="btn btn-sm btn-outline-primary me-1">
                                                 <i class="fa fa-edit"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
+                                        <button class="btn btn-sm btn-outline-danger delete-btn"
+                                                data-id="@e.ExpenseId"
+                                                data-name="@e.Description">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
                                         </td>
                                     </tr>
                                 }
@@ -110,5 +166,98 @@
             </div>
         </main>
     </div>
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fa fa-warning me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to delete 
+                <strong id="deleteCategoryName"></strong> ?
+                <br />
+                <span class="text-muted">Once deleted, this action cannot be undone.'</span>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Open modal
+        var deleteExpenseId = null;
+    $(document).on('click', '.delete-btn', function () {
+        deleteExpenseId = $(this).data('id');
+        const categoryName = $(this).data('name');
+
+        $('#deleteCategoryName').text(categoryName);
+        $('#confirmDeleteModal').modal('show');
+    });
+
+    // Confirm delete
+    $('#confirmDeleteBtn').on('click', ()=> {
+        $.ajax({
+            url: '/Dashboard/DeleteExpense',
+            type: 'POST',
+            data: { id: deleteExpenseId },
+            success: function (response) {
+
+                if (response.success) {
+                    $('#confirmDeleteModal').modal('hide');
+
+                    // remove row smoothly
+                    $(`button[data-id="${deleteExpenseId}"]`)
+                        .closest('tr')
+                        .fadeOut(300, function () {
+                            $(this).remove();
+                        });
+                }
+                else {
+                    $('#confirmDeleteModal').modal('hide');
+                    alert(response.message || 'Delete failed');
+                }
+            },
+            error: function () {
+                alert('Something went wrong!');
+            }
+        });
+    });
+    //loadCategories 
+    function loadCategories() {
+        $.ajax({
+            url: '/Dashboard/GetCategories',
+            type: 'GET',
+            success: function (data) {
+                const dropdown = $('#categoryId');
+                dropdown.empty();
+                dropdown.append('<option value="">-- Select Category --</option>');
+
+                $.each(data, function (i, item) {
+                    dropdown.append(
+                        `<option value="${item.categoryId}">
+                            ${item.categoryName}
+                         </option>`
+                    );
+                });
+            },
+            error: function () {
+                alert('Failed to load categories');
+            }
+        });
+    }
+</script>

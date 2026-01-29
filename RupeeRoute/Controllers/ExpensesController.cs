@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using RupeeRoute.API.DTOs;
 using RupeeRoute.API.DTOs.Expense;
 using RupeeRoute.API.Models;
@@ -151,22 +152,13 @@ namespace RupeeRoute.API.Controllers
             return Ok(existing);
         }
 
-        // DELETE: api/expenses/5
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteExpense(int id)
-        {
-            var existing = await _context.Expenses.FindAsync(id);
-            if (existing == null) return NotFound();
-
-            _context.Expenses.Remove(existing);
-            await _context.SaveChangesAsync();
-            return Ok();
-        }
+        
         [HttpGet("expense/{userId}")]
-        public async Task<IActionResult> GetExpenses(int userId)
+        public async Task<IActionResult> GetExpenses(int userId,int limit)
         {
             var data = await _context.Expenses
                 .Where(e => e.UserId == userId)
+                .Take(limit)
                 .Select(e => new
                 {
                     e.ExpenseId,
@@ -180,11 +172,27 @@ namespace RupeeRoute.API.Controllers
 
             return Ok(data);
         }
+        [HttpPost("addsaving/{userId}")]
+        public async Task<IActionResult> AddSaving([FromBody] DtoCreateSaving dto,int userId)
+        {
+            if (dto.Amount <=0)
+                return BadRequest("Invalid amount");
+            var saving = new Saving
+            {
+                UserId = userId,
+                Amount = dto.Amount,
+                Note = dto.Note,
+                CreatedOn = DateTime.Now
+            };
+            _context.Savings.Add(saving);
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true, message = dto.Amount+"|"+dto.Note });
+        }
         [HttpGet("saving/{userId}")]
-        public async Task<IActionResult> GetSavings(int userId)
+        public async Task<IActionResult> GetSavings(int userId,int limit)
         {
             var data = await _context.Savings
-                .Where(e => e.UserId == userId)
+                .Where(e => e.UserId == userId).Take(limit)
                 .Select(e => new
                 {
                     SavingDate = e.CreatedOn,
@@ -204,10 +212,11 @@ namespace RupeeRoute.API.Controllers
                 .Select(e => new
                 {
                     e.CategoryId,
-                    CreatedDate = e.CreatedOn,
+                    CreatedOn = e.CreatedOn,
                     CategoryName = e.CategoryName,
                 })
-                .OrderByDescending(e => e.CategoryId)
+                .Take(10)
+                .OrderBy(e => e.CreatedOn)
                 .ToListAsync();
 
             return Ok(data);
@@ -233,6 +242,43 @@ namespace RupeeRoute.API.Controllers
             return Ok(new { success = true, message = "Expense added successfully" });
         }
         
+        [HttpPost("addexpensecategory/{userId}")]
+        public async Task<IActionResult> NewCategory(int userId,[FromBody] DtoCreateExpenseCategory dto)
+        {
+            var category = new ExpenseCategory
+            {
+                UserId= userId,
+                CategoryName=dto.CategoryName,
+                CreatedOn= DateTime.Now
+            };
+
+            _context.ExpenseCategories.Add(category);
+            int x=await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Category Created Successfully" });
+        }
+        //Delete Category
+        [HttpDelete("delete-category/{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var existing = await _context.ExpenseCategories.FindAsync(id);
+            if (existing == null) return NotFound();
+
+            _context.ExpenseCategories.Remove(existing);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        //Delete Category
+        [HttpDelete("delete-expense/{id}")]
+        public async Task<IActionResult> DeleteExpense(int id)
+        {
+            var existing = await _context.Expenses.FindAsync(id);
+            if (existing == null) return NotFound();
+
+            _context.Expenses.Remove(existing);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
 
     }
 }

@@ -1,10 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-
-@model IEnumerable<RupeeRoute.Web.Models.SavingViewModel>
+﻿@model IEnumerable<RupeeRoute.Web.Models.SavingViewModel>
 
 @{
     ViewData["Title"] = "Savings";
@@ -15,17 +9,57 @@
 
     <div class="row">
 
-        
 
+    <!-- Add Saving Modal -->
+    <div class="modal fade" id="addSavingModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-wallet me-2"></i>Add Saving
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="savingForm">
+
+                        <div class="mb-3">
+                            <label class="form-label">Amount (₹)</label>
+                            <input type="number" class="form-control" id="amount" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Note</label>
+                            <input type="text" class="form-control" id="note" />
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" onclick="addSaving()">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
         <!-- Main content -->
         <main class="col-lg-10 offset-lg-2 px-4 py-4">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Savings</h2>
-                <button class="btn btn-success">
-                    <i class="fa fa-plus me-1"></i> Add Saving
-                </button>
-            </div>
+        <div class="d-flex justify-content-between py-4">
+            <h4 class="">Manage Saving</h4>
+            <button class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addSavingModal">
+                <i class="fa fa-plus me-1"></i> Add Saving
+            </button>
+
+
+
+        </div>
 
             <div class="card shadow-sm">
                 <div class="card-header fw-bold bg-white">Savings History</div>
@@ -68,3 +102,4 @@
 
         </main>
     </div>
+    

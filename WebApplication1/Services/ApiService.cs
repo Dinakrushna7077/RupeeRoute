@@ -53,9 +53,9 @@ namespace RupeeRoute.Web.Models
                 .ReadFromJsonAsync<DashboardViewModel>();
         }
 
-        public async Task<List<ExpensesViewModel>> GetExpenses(int userId)
+        public async Task<List<ExpensesViewModel>> GetExpenses(int userId,int limit)
         {
-            var response = await _client.GetAsync($"Expenses/expense/{userId}");
+            var response = await _client.GetAsync($"Expenses/expense/{userId}?limit={limit}");
 
             if (!response.IsSuccessStatusCode)
                 return new List<ExpensesViewModel>();
@@ -63,9 +63,9 @@ namespace RupeeRoute.Web.Models
             return await response.Content.ReadFromJsonAsync<List<ExpensesViewModel>>()
                    ?? new List<ExpensesViewModel>();
         }
-        public async Task<List<SavingViewModel>> GetSavings(int userId)
+        public async Task<List<SavingViewModel>> GetSavings(int userId,int limit)
         {
-            var response = await _client.GetAsync($"Expenses/saving/{userId}");
+            var response = await _client.GetAsync($"Expenses/saving/{userId}?limit={limit}");
 
             if (!response.IsSuccessStatusCode)
                 return new List<SavingViewModel>();
@@ -89,11 +89,37 @@ namespace RupeeRoute.Web.Models
 
             return response.IsSuccessStatusCode;
         }
-
-
-
-
-
+        public async Task<bool> AddSaving(int userId, SavingViewModel sav)
+        {
+            var dto = new
+            {
+                Amount = sav.Amount,
+                Note = sav.SavingNote
+            };
+            var response = await _client.PostAsJsonAsync($"Expenses/addsaving/{userId}", dto);
+            return response.IsSuccessStatusCode;
+        }
+        
+        public async Task<bool> NewCategory(int userId, ExpenseCategoryViewModel category)
+        {
+            var dto = new
+            {
+                UserId=userId,
+                CategoryName = category.CategoryName
+            };
+            var response = await _client.PostAsJsonAsync($"Expenses/addexpensecategory/{userId}", dto);
+            return response.IsSuccessStatusCode;
+        }
+        public async Task<bool> DeleteCategoryAsync(int id)
+        {
+            var response = await _client.DeleteAsync($"expenses/delete-category/{id}");
+            return response.IsSuccessStatusCode;
+        }
+        public async Task<bool> DeleteExpenseAsync(int id)
+        {
+            var response = await _client.DeleteAsync($"expenses/delete-expense/{id}");
+            return response.IsSuccessStatusCode;
+        }
 
     }
 }

@@ -1,8 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿
 @model IEnumerable<RupeeRoute.Web.Models.ExpenseCategoryViewModel>
 
 @{
@@ -50,12 +46,24 @@
                                         </span>
                                     </td>
                                     <td>
-                                        @(item.CreatedOn == DateTime.MinValue ? "-" : item.CreatedOn?.ToString("dd MMM yyyy"))
+                                        @item.CreatedOn?.ToString("dd MMM yyyy")
                                     </td>
                                     <td class="text-end">
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                        @if(i==1||i==2)
+                                        {
+                                            <button class="btn btn-sm btn-outline-danger disabled">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-outline-danger delete-btn"
+                                                    data-id="@item.CategoryId"
+                                                    data-name="@item.CategoryName">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+
+                                        }
                                     </td>
                                 </tr>
                                 i++;
@@ -92,18 +100,87 @@
                         <label class="form-label">Category Name</label>
                         <input type="text" class="form-control" id="categoryName" placeholder="e.g. Food" required />
                     </div>
-
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fa fa-save me-1"></i> Save
-                        </button>
-                    </div>
-
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success" onclick="createNewCategory()"><i class="fa fa-save me-1"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fa fa-warning me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                @* Are you sure you want to delete *@ Deleting this category may affect related expenses.
+                <strong id="deleteCategoryName"></strong> ?
+                <br />
+                <span class="text-muted">The delete option is currently under process...</span>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Ok
+                </button>
+                @* <button class="btn btn-danger" id="confirmDeleteBtn">
+                    Delete
+                </button> *@
             </div>
 
         </div>
     </div>
 </div>
+<script>
+        // Open modal
+        var deleteCategoryId = null;
+    $(document).on('click', '.delete-btn', function () {
+        deleteCategoryId = $(this).data('id');
+        const categoryName = $(this).data('name');
+
+        $('#deleteCategoryName').text(categoryName);
+        $('#confirmDeleteModal').modal('show');
+    });
+
+    // Confirm delete
+    /*$('#confirmDeleteBtn').on('click', ()=> {
+        $.ajax({
+            url: '/Dashboard/DeleteCategory',
+            type: 'POST',
+            data: { id: deleteCategoryId },
+            success: function (response) {
+
+                if (response.success) {
+                    $('#confirmDeleteModal').modal('hide');
+
+                    // remove row smoothly
+                    $(`button[data-id="${deleteCategoryId}"]`)
+                        .closest('tr')
+                        .fadeOut(300, function () {
+                            $(this).remove();
+                        });
+                }
+                else {
+                    $('#confirmDeleteModal').modal('hide');
+                    alert(response.message || 'Delete failed');
+                }
+            },
+            error: function () {
+                alert('Something went wrong!');
+            }
+        });
+    });*/
+</script>
 
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
